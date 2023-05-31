@@ -122,7 +122,6 @@ unsigned int __fastcall DoComplete_Hook(wchar_t* ResultPath, int a2, int a3, int
 	if (ResultPath)
 	{
 		static int LastSkipIndex = 0;
-		static int LastSize = 0;
 		static std::wstring LastSubName{};
 		if (GetAsyncKeyState(VK_SHIFT))
 		{
@@ -148,7 +147,6 @@ unsigned int __fastcall DoComplete_Hook(wchar_t* ResultPath, int a2, int a3, int
 		else
 		{
 			LastSkipIndex = 0;
-			LastSize = 0;
 			LastSubName = {};
 		}
 	}
