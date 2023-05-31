@@ -110,31 +110,45 @@ std::wstring GetProcessFullnameBySubname(std::wstring ProcSubname, int iSkip)
 	return ResultName;
 }
 
+std::wstring GetIncompliteInput(std::wstring wstr, int& index)
+{
+	index = wstr.rfind(L" ") + 1;
+	return wstr.substr(index);
+}
+
 unsigned int(__fastcall* DoComplete_Original)(wchar_t* ResultPath, int a2, int a3, int a4, int a5, int a6) = nullptr;
 unsigned int __fastcall DoComplete_Hook(wchar_t* ResultPath, int a2, int a3, int a4, int a5, int a6)
 {
 	if (ResultPath)
 	{
 		static int LastSkipIndex = 0;
+		static int LastSize = 0;
 		static std::wstring LastSubName{};
 		if (GetAsyncKeyState(VK_SHIFT))
 		{
 			if (LastSubName.empty())
 				LastSubName = ResultPath;
 
-			auto ProcessFullname = GetProcessFullnameBySubname(LastSubName, LastSkipIndex);
+			int at = 0;
+			auto Input = GetIncompliteInput(LastSubName, at);
+			auto ProcessFullname = GetProcessFullnameBySubname(Input, LastSkipIndex);
 			LastSkipIndex++;
+
 			auto ret = DoComplete_Original(ResultPath, a2, a3, a4, a5, a6);	
 			if(ProcessFullname.empty())
 				return ret;
 
+			std::wstring wstrResultPath = std::wstring(ResultPath).substr(0, at);	
+			wstrResultPath += ProcessFullname;
+
 			memset(ResultPath, 0, wcslen(ResultPath) * 2);
-			memcpy(ResultPath, ProcessFullname.data(), ProcessFullname.size() * 2);
-			return ProcessFullname.size();
+			memcpy(ResultPath, wstrResultPath.data(), wstrResultPath.size() * 2);
+			return wstrResultPath.size();
 		}
 		else
 		{
 			LastSkipIndex = 0;
+			LastSize = 0;
 			LastSubName = {};
 		}
 	}
