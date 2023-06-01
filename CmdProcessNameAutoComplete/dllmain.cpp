@@ -122,7 +122,6 @@ unsigned int __fastcall DoComplete_Hook(wchar_t* ResultPath, int a2, int a3, int
 	if (ResultPath)
 	{
 		static int LastSkipIndex = 0;
-		static int LastSize = 0;
 		static std::wstring LastSubName{};
 		if (GetAsyncKeyState(VK_SHIFT))
 		{
@@ -141,14 +140,13 @@ unsigned int __fastcall DoComplete_Hook(wchar_t* ResultPath, int a2, int a3, int
 			std::wstring wstrResultPath = std::wstring(ResultPath).substr(0, at);	
 			wstrResultPath += ProcessFullname;
 
-			memset(ResultPath, 0, wcslen(ResultPath) * 2);
+			memset(ResultPath, 0, MAX_PATH);
 			memcpy(ResultPath, wstrResultPath.data(), wstrResultPath.size() * 2);
 			return wstrResultPath.size();
 		}
 		else
 		{
 			LastSkipIndex = 0;
-			LastSize = 0;
 			LastSubName = {};
 		}
 	}
