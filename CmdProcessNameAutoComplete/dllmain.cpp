@@ -110,7 +110,7 @@ std::wstring GetProcessFullnameBySubname(std::wstring ProcSubname, int iSkip)
 	return ResultName;
 }
 
-std::wstring GetIncompliteInput(std::wstring wstr, int& index)
+std::wstring GetIncompleteInput(std::wstring wstr, int& index)
 {
 	index = wstr.rfind(L" ") + 1;
 	return wstr.substr(index);
@@ -129,7 +129,7 @@ unsigned int __fastcall DoComplete_Hook(wchar_t* ResultPath, int a2, int a3, int
 				LastSubName = ResultPath;
 
 			int at = 0;
-			auto Input = GetIncompliteInput(LastSubName, at);
+			auto Input = GetIncompleteInput(LastSubName, at);
 			auto ProcessFullname = GetProcessFullnameBySubname(Input, LastSkipIndex);
 			LastSkipIndex++;
 
